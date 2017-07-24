@@ -1,8 +1,8 @@
 node {
        stage 'buildInDev'
-       openshiftBuild(buildConfig: 'frontend', showBuildLogs: 'true')
+       openshiftBuild(buildConfig: 'cake', showBuildLogs: 'true')
        stage 'deployInDev'
-       openshiftVerifyDeployment(deploymentConfig: 'frontend')
+       openshiftVerifyDeployment(deploymentConfig: 'cake')
        stage "deployToProd"
        input message: 'Promote to production ?', ok: '\'Yes\''
        echo "Deploying to production."
