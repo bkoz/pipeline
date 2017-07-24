@@ -8,6 +8,8 @@ Create an app from the console (or the cli) and name it <code>dev</code>. This w
 
 ```oc new-app --name=dev https://github.com/openshift/cakephp-ex.git```
 
+```oc expose service dev```
+
 Wait for the build to complete and manually tag the image stream.
 
 ```oc tag cicd/dev:latest cicd/dev:prod```
