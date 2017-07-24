@@ -6,6 +6,6 @@ node {
        stage "deployToProd"
        input message: 'Promote to production ?', ok: '\'Yes\''
        echo "Deploying to production."
-       openshiftTag(sourceStream: 'origin-nodejs-sample', sourceTag: 'latest', destinationStream: 'origin-nodejs-sample', destinationTag: 'prod')
-       openshiftScale(deploymentConfig: 'frontend-prod',replicaCount: '1')
+       openshiftTag(sourceStream: 'cake', sourceTag: 'latest', destinationStream: 'cake', destinationTag: 'prod')
+       openshiftScale(deploymentConfig: 'prod',replicaCount: '2')
 }
