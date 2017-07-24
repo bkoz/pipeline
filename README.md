@@ -22,5 +22,5 @@ Create the pipeline build config.
 
 ```oc new-build --strategy=pipeline https://github.com/bkoz/pipeline.git```
 
-Now watch the pipeline progress from the OpenShift console <em>Builds</em> menu.
+Now watch the pipeline progress from the OpenShift console <em>Builds->Pipelines</em> menu.
 
