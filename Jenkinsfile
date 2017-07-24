@@ -1,11 +1,11 @@
 node {
        stage 'buildInDev'
-       openshiftBuild(buildConfig: 'cake', showBuildLogs: 'true')
+       openshiftBuild(buildConfig: 'dev', showBuildLogs: 'true')
        stage 'deployInDev'
-       openshiftVerifyDeployment(deploymentConfig: 'cake')
+       openshiftVerifyDeployment(deploymentConfig: 'dev')
        stage "deployToProd"
        input message: 'Promote to production ?', ok: '\'Yes\''
        echo "Deploying to production."
-       openshiftTag(sourceStream: 'cake', sourceTag: 'latest', destinationStream: 'cake', destinationTag: 'prod')
+       openshiftTag(sourceStream: 'dev', sourceTag: 'latest', destinationStream: 'dev', destinationTag: 'prod')
        openshiftScale(deploymentConfig: 'prod',replicaCount: '2')
 }
