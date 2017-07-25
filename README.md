@@ -26,4 +26,4 @@ Create the pipeline build config.
 
 From the OpenShift console, navigate to <em>Builds->Pipelines</em> and watch the progress.
 
-This file is published at <a href=https://bkoz.github.io/pipeline/>https://bkoz.github.io/pipeline/
+This file is published at [https://bkoz.github.io/pipeline/](https://bkoz.github.io/pipeline/)
