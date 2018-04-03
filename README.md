@@ -11,8 +11,6 @@ oc new-app jenkins-ephemeral
 oc new-app -f https://raw.githubusercontent.com/openshift/origin/master/examples/jenkins/application-template.json
 ```
 
-oc set triggers dc/frontend --auto (Can also use console: edit dc, under image stream check "Automatically start a new deployment when the image changes"
-
 Create the pipeline build configuration (via cli or import yaml from console).
 
 Console: Add to project->import the following yaml
@@ -29,14 +27,18 @@ spec:
         node() {
           stage 'buildFrontEnd'
           openshiftBuild(buildConfig: 'frontend', showBuildLogs: 'true')
+  
           stage 'deployFrontEnd'
+          openshiftDeploy(deploymentConfig: 'frontend')
+  
+          stage 'verifyFrontEnd'
           openshiftVerifyDeployment(deploymentConfig: 'frontend')
+  
           stage "promoteToProd"
           input message: 'Promote to production ?', ok: '\'Yes\''
-          echo "Deploying to production."
           openshiftTag(sourceStream: 'origin-nodejs-sample', sourceTag: 'latest', destinationStream: 'origin-nodejs-sample', destinationTag: 'prod')
+  
           stage 'scaleUp'
-          echo "Scale Up"
           openshiftScale(deploymentConfig: 'frontend-prod',replicaCount: '2')
         }
 ```

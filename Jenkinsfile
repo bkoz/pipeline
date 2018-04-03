@@ -1,11 +1,18 @@
-node {
-       stage 'buildInDev'
-       openshiftBuild(buildConfig: 'dev', showBuildLogs: 'true')
-       stage 'deployInDev'
-       openshiftVerifyDeployment(deploymentConfig: 'dev')
-       stage "deployToProd"
-       input message: 'Promote to production ?', ok: '\'Yes\''
-       echo "Deploying to production."
-       openshiftTag(sourceStream: 'dev', sourceTag: 'latest', destinationStream: 'dev', destinationTag: 'prod')
-       openshiftScale(deploymentConfig: 'prod',replicaCount: '2')
-}
+
+       node() {
+          stage 'buildFrontEnd'
+          openshiftBuild(buildConfig: 'frontend', showBuildLogs: 'true')
+  
+          stage 'deployFrontEnd'
+          openshiftDeploy(deploymentConfig: 'frontend')
+  
+          stage 'verifyFrontEnd'
+          openshiftVerifyDeployment(deploymentConfig: 'frontend')
+  
+          stage "promoteToProd"
+          input message: 'Promote to production ?', ok: '\'Yes\''
+          openshiftTag(sourceStream: 'origin-nodejs-sample', sourceTag: 'latest', destinationStream: 'origin-nodejs-sample', destinationTag: 'prod')
+  
+          stage 'scaleUp'
+          openshiftScale(deploymentConfig: 'frontend-prod',replicaCount: '2')
+        }
