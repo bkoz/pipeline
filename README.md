@@ -35,7 +35,8 @@ spec:
           input message: 'Promote to production ?', ok: '\'Yes\''
           echo "Deploying to production."
           openshiftTag(sourceStream: 'origin-nodejs-sample', sourceTag: 'latest', destinationStream: 'origin-nodejs-sample', destinationTag: 'prod')
-          echo "Scaling"
+          stage 'scaleUp'
+          echo "Scale Up"
           openshiftScale(deploymentConfig: 'frontend-prod',replicaCount: '2')
         }
 ```
@@ -61,7 +62,8 @@ spec:
           input message: 'Promote to production ?', ok: '\'Yes\''
           echo "Deploying to production."
           openshiftTag(sourceStream: 'origin-nodejs-sample', sourceTag: 'latest', destinationStream: 'origin-nodejs-sample', destinationTag: 'prod')
-          echo "Scaling"
+          stage 'scaleUp'
+          echo "Scale Up"
           openshiftScale(deploymentConfig: 'frontend-prod',replicaCount: '2')
         }
 EOF
