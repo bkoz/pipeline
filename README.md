@@ -31,9 +31,6 @@ spec:
           stage 'deployFrontEnd'
           openshiftDeploy(deploymentConfig: 'frontend')
   
-          stage 'verifyFrontEnd'
-          openshiftVerifyDeployment(deploymentConfig: 'frontend')
-  
           stage "promoteToProd"
           input message: 'Promote to production ?', ok: '\'Yes\''
           openshiftTag(sourceStream: 'origin-nodejs-sample', sourceTag: 'latest', destinationStream: 'origin-nodejs-sample', destinationTag: 'prod')
@@ -47,31 +44,7 @@ CLI:
 
 ```
 oc create -f - <<EOF
-kind: "BuildConfig"
-apiVersion: "v1"
-metadata:
-  name: "pipeline"
-spec:
-  strategy:
-    jenkinsPipelineStrategy:
-      jenkinsfile: |-
-        node() {
-          stage 'buildFrontEnd'
-          openshiftBuild(buildConfig: 'frontend', showBuildLogs: 'true')
-  
-          stage 'deployFrontEnd'
-          openshiftDeploy(deploymentConfig: 'frontend')
-  
-          stage 'verifyFrontEnd'
-          openshiftVerifyDeployment(deploymentConfig: 'frontend')
-  
-          stage "promoteToProd"
-          input message: 'Promote to production ?', ok: '\'Yes\''
-          openshiftTag(sourceStream: 'origin-nodejs-sample', sourceTag: 'latest', destinationStream: 'origin-nodejs-sample', destinationTag: 'prod')
-  
-          stage 'scaleUp'
-          openshiftScale(deploymentConfig: 'frontend-prod',replicaCount: '2')
-        }
+<Copy and paste the YAML code from above>
 EOF
 ```
 
