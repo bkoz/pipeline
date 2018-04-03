@@ -1,8 +1,97 @@
-# Jenkins pipeline example in OpenShift v3.5
+# Jenkins pipeline example in 
 
 Create a project called <em>cicd</em>.
 
 ```oc new-project cicd```
+
+## OpenShift v3.7
+
+```
+oc new-app jenkins-ephemeral
+oc new-app -f https://raw.githubusercontent.com/openshift/origin/master/examples/jenkins/application-template.json
+```
+
+oc set triggers dc/frontend --auto (Can also use console: edit dc, under image stream check "Automatically start a new deployment when the image changes"
+
+Create the pipeline build configuration (via cli or import yaml from console).
+
+Console: Add to project->import the following yaml
+
+```
+kind: "BuildConfig"
+apiVersion: "v1"
+metadata:
+  name: "pipeline"
+spec:
+  strategy:
+    jenkinsPipelineStrategy:
+      jenkinsfile: |-
+        node() {
+          stage 'buildFrontEnd'
+          openshiftBuild(buildConfig: 'frontend', showBuildLogs: 'true')
+          stage 'deployFrontEnd'
+          openshiftVerifyDeployment(deploymentConfig: 'frontend')
+          stage "promoteToProd"
+          input message: 'Promote to production ?', ok: '\'Yes\''
+          echo "Deploying to production."
+          openshiftTag(sourceStream: 'origin-nodejs-sample', sourceTag: 'latest', destinationStream: 'origin-nodejs-sample', destinationTag: 'prod')
+          echo "Scaling"
+          openshiftScale(deploymentConfig: 'frontend-prod',replicaCount: '2')
+        }
+```
+
+CLI:
+
+```
+oc create -f - <<EOF
+kind: "BuildConfig"
+apiVersion: "v1"
+metadata:
+  name: "pipeline"
+spec:
+  strategy:
+    jenkinsPipelineStrategy:
+      jenkinsfile: |-
+        node() {
+          stage 'buildFrontEnd'
+          openshiftBuild(buildConfig: 'frontend', showBuildLogs: 'true')
+          stage 'deployFrontEnd'
+          openshiftVerifyDeployment(deploymentConfig: 'frontend')
+          stage "promoteToProd"
+          input message: 'Promote to production ?', ok: '\'Yes\''
+          echo "Deploying to production."
+          openshiftTag(sourceStream: 'origin-nodejs-sample', sourceTag: 'latest', destinationStream: 'origin-nodejs-sample', destinationTag: 'prod')
+          echo "Scaling"
+          openshiftScale(deploymentConfig: 'frontend-prod',replicaCount: '2')
+        }
+EOF
+```
+
+Builds->Pipelines
+
+Click on the "pipeline" link.
+
+Click on "Configuration".
+
+Note the (3) stages.
+
+Click on "Start Pipeline".
+
+Click on "History".
+
+Under the Build #, click on "View Log" -> Redirects to Jenkins Console
+
+OCP console -> view frontend route
+
+Builds->Pipeline
+
+Input Required via Jenkins console.
+
+Note delpyment with 2 replicas.
+
+oc create route --service=frontend-prod edge (Also possible via console)
+
+## OpenShift v3.5
 
 Create an app and name it <em>dev</em>. This will create the <em>dev</em> build and deployment configurations.
 
