@@ -99,6 +99,8 @@ From the OpenShift console, navigate to <em>Builds->Pipelines</em> and watch the
 This file is published at [https://bkoz.github.io/pipeline/](https://bkoz.github.io/pipeline/)
 
 ## New stuff (>v3.7)
+
+~~~shell
 openshift.withCluster() { // Use "default" cluster or fallback to OpenShift cluster detection
     echo "Hello from the project running Jenkins: ${openshift.project()}"
     
@@ -117,4 +119,6 @@ openshift.withCluster() { // Use "default" cluster or fallback to OpenShift clus
     openshift.selector( 'deploymentconfig/frontend-prod' ).scale('--replicas','4')
     }
 }
+~~~
+
 
