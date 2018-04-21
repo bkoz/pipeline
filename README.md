@@ -1,4 +1,4 @@
-# Jenkins pipeline example in 
+# Jenkins pipeline example 
 
 Create a project called <em>cicd</em>.
 
@@ -97,3 +97,24 @@ Create the Jenkins pipeline build config using an example from my github repo.
 From the OpenShift console, navigate to <em>Builds->Pipelines</em> and watch the progress.
 
 This file is published at [https://bkoz.github.io/pipeline/](https://bkoz.github.io/pipeline/)
+
+## New stuff (>v3.7)
+openshift.withCluster() { // Use "default" cluster or fallback to OpenShift cluster detection
+    echo "Hello from the project running Jenkins: ${openshift.project()}"
+    
+    stage('buildFrontEnd') {
+    openshift.selector('buildconfig/frontend').startBuild()
+    }
+    
+    // Selectors can also be defined using qualified names
+    // openshift.selector( 'deploymentconfig/frontend' ).describe()
+    
+    // Selectors can also be defined using qualified names
+    // openshift.selector( 'deploymentconfig/frontend-prod' ).describe()
+    
+    stage('scaleProd') {
+    // Try to scale the dc
+    openshift.selector( 'deploymentconfig/frontend-prod' ).scale('--replicas','4')
+    }
+}
+
